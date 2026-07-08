@@ -56,7 +56,7 @@ def sliding_window(signal, fs, window_sec=5, overlap=0.5):
     window_len = int(round(window_sec * fs))
     step = int(round(window_len * (1 - overlap)))
     if step <= 0:
-        raise ValueError("overlap too large — step size becomes 0")
+        raise ValueError("overlap too large â€” step size becomes 0")
 
     n_samples = signal.shape[0]
     starts = range(0, n_samples - window_len + 1, step)
@@ -86,7 +86,7 @@ def sliding_window_by_time(timestamps, values, window_sec=5, overlap=0.5,
 
     Returns
     -------
-    list of np.ndarray — one array per window (may be empty if no events fall
+    list of np.ndarray â€” one array per window (may be empty if no events fall
     in that window)
     """
     timestamps = np.asarray(timestamps)
@@ -94,7 +94,7 @@ def sliding_window_by_time(timestamps, values, window_sec=5, overlap=0.5,
 
     step = window_sec * (1 - overlap)
     if step <= 0:
-        raise ValueError("overlap too large — step size becomes 0")
+        raise ValueError("overlap too large â€” step size becomes 0")
 
     end_time = total_duration if total_duration is not None else timestamps.max()
 
@@ -185,66 +185,46 @@ def window_empatica_subject(empatica_dir, window_sec=5, overlap=0.5):
 # ----------------------------------------------------------------------------
 def load_respiban_txt(filepath):
     """
-    Parses a RespiBan .txt export:
-        line0: '# {...json header...}'
-        line1: '# EndOfHeader'
-        rest : whitespace-separated numeric data
-
-    Robust to a leading BOM character, blank lines, or extra '#' comment
-    lines before 'EndOfHeader' — it scans for the first '#' line that
-    contains a JSON object rather than assuming it's exactly line 0.
+    Parses a RespiBan/OpenSignals .txt export. WESAD files may start with
+    a plain comment line, then a commented JSON metadata line, then data.
 
     Returns
     -------
     df : DataFrame with one column per sensor (already mapped from CHn -> name)
     fs : sampling rate (Hz), same for all channels
     """
-    with open(filepath, "r", encoding="utf-8-sig") as f:
-        lines = f.readlines()
-
-    header_json = None
-    data_start_idx = None
-    for i, line in enumerate(lines):
-        stripped = line.strip()
-        if not stripped:
-            continue
-        if stripped.startswith("#"):
-            content = stripped.lstrip("#").strip()
-            if content.startswith("{"):
-                header_json = content
-            if "endofheader" in stripped.lower():
-                data_start_idx = i + 1
+    header = None
+    with open(filepath, "r", encoding="utf-8") as f:
+        for line in f:
+            stripped = line.strip()
+            if not stripped.startswith("#") or "{" not in stripped:
+                continue
+            header_json = stripped.lstrip("#").strip()
+            try:
+                header = json.loads(header_json)
                 break
-        else:
-            # hit a non-comment, non-blank line before finding EndOfHeader
-            break
+            except json.JSONDecodeError:
+                continue
 
-    if header_json is None or data_start_idx is None:
-        raise ValueError(
-            f"Could not locate JSON header / 'EndOfHeader' marker in "
-            f"{filepath}. First few lines were: {lines[:3]}"
-        )
+    if header is None:
+        raise ValueError(f"Could not find JSON metadata header in {filepath}")
 
-    header = json.loads(header_json)
     device_mac = list(header.keys())[0]
     meta = header[device_mac]
 
     fs = meta["sampling rate"]
-    sensors = meta["sensor"]          # e.g. ["ECG","EDA","EMG","TEMP","XYZ","XYZ","XYZ","RESPIRATION"]
-    columns = meta["column"]          # e.g. ["nSeq","DI","CH1",...,"CH8"]
+    sensors = meta["sensor"]
+    columns = meta["column"]
 
-    # Build CHn -> sensor-name mapping (handles repeated XYZ -> ACC_x/y/z)
     ch_cols = [c for c in columns if c.startswith("CH")]
     xyz_axes = iter(["ACC_x", "ACC_y", "ACC_z"])
     ch_to_name = {}
     for ch, sensor in zip(ch_cols, sensors):
         ch_to_name[ch] = next(xyz_axes) if sensor == "XYZ" else sensor
 
-    data = pd.read_csv(filepath, sep=r"\s+", header=None, names=columns,
-                        skiprows=data_start_idx)
+    data = pd.read_csv(filepath, sep=r"\s+", comment="#", header=None, names=columns)
     data = data.rename(columns=ch_to_name)
     return data, fs
-
 
 def window_respiban_subject(respiban_txt_path, window_sec=5, overlap=0.5):
     """
@@ -386,8 +366,8 @@ if __name__ == "__main__":
     OVERLAP = 0.5  # 50% overlap; set to 0 for non-overlapping windows
 
     # --- adjust these paths to your data ---
-    EMPATICA_DIR = "../data/raw/WESAD/S2/S2_E4_Data"       # folder containing ACC.csv, EDA.csv, ...
-    RESPIBAN_TXT = "../data/raw/WESAD/S2/S2_respiban.txt"
+    EMPATICA_DIR = "../../Data/raw/WESAD/S2/S2_E4_Data"       # folder containing ACC.csv, EDA.csv, ...
+    RESPIBAN_TXT = "../../Data/raw/WESAD/S2/S2_respiban.txt"
 
 
     all_windows = {}
@@ -418,7 +398,7 @@ if __name__ == "__main__":
     print("\nDone. Windowed arrays saved to:", out_dir)
 
     # ------------------------------------------------------------------
-    # Example plots — showing how the windows overlap in time.
+    # Example plots â€” showing how the windows overlap in time.
     # Adjust signal_name / fs to whichever signal you want to inspect.
     # ------------------------------------------------------------------
     plot_dir = os.path.join(out_dir, "plots")
@@ -448,3 +428,4 @@ if __name__ == "__main__":
     #   df, fs = load_respiban_txt(RESPIBAN_TXT)
     #   plot_signal_with_window_bounds(df["ECG"].values, fs, WINDOW_SEC, OVERLAP,
     #                                   signal_name="RespiBan ECG")
+

@@ -1,28 +1,28 @@
-# import pandas as pd
+﻿# import pandas as pd
 # import matplotlib.pyplot as plt
 
-# file_path= "data/raw/WESAD/S2/S2_E4_Data/ACC.csv"
+# file_path= "../Data/raw/WESAD/S2/S2_E4_Data/ACC.csv"
 # df1= pd.read_csv(file_path)
 # print(df1.head())
 # print(df1.columns)
 # print(df1.shape)
 # df1.plot()
 # plt.show()
-# file_path= "data/raw/WESAD/S2/S2_E4_Data/EDA.csv"
+# file_path= "../Data/raw/WESAD/S2/S2_E4_Data/EDA.csv"
 # df2= pd.read_csv(file_path)
 # print(df2.head())
 # print(df2.columns)
 # print(df2.shape)
 # df2.plot()
 # plt.show()
-# file_path= "data/raw/WESAD/S2/S2_E4_Data/HR.csv"
+# file_path= "../Data/raw/WESAD/S2/S2_E4_Data/HR.csv"
 # df3= pd.read_csv(file_path)
 # print(df3.head())
 # print(df3.columns)
 # print(df3.shape)
 # df3.plot()
 # plt.show()
-# file_path= "data/raw/WESAD/S2/S2_E4_Data/TEMP.csv"
+# file_path= "../Data/raw/WESAD/S2/S2_E4_Data/TEMP.csv"
 # df4= pd.read_csv(file_path)
 # print(df4.head())
 # print(df4.columns)
@@ -34,12 +34,12 @@
 # import pandas as pd
 # import matplotlib.pyplot as plt
 
-# df1 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/ACC.csv")
-# df2 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/BVP.csv")
-# df3 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/EDA.csv")
-# df4 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/HR.csv")
-# df5 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/IBI.csv")
-# df6 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/TEMP.csv")
+# df1 = pd.read_csv("../Data/raw/WESAD/S2/S2_E4_Data/ACC.csv")
+# df2 = pd.read_csv(S2_E4_DIR / "BVP.csv")
+# df3 = pd.read_csv(S2_E4_DIR / "EDA.csv")
+# df4 = pd.read_csv(S2_E4_DIR / "HR.csv")
+# df5 = pd.read_csv(S2_E4_DIR / "IBI.csv")
+# df6 = pd.read_csv(S2_E4_DIR / "TEMP.csv")
 
 
 
@@ -67,13 +67,13 @@
 # import pandas as pd
 # import matplotlib.pyplot as plt
 
-# df = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/EDA.csv")
+# df = pd.read_csv(S2_E4_DIR / "EDA.csv")
 
 # plt.plot(df)
 
 # plt.title("EDA Signal")
 # plt.xlabel("Sample Number")
-# plt.ylabel("Skin Conductance (µS)")
+# plt.ylabel("Skin Conductance (ÂµS)")
 
 # plt.show()
 
@@ -83,12 +83,12 @@
 # import pandas as pd
 # import matplotlib.pyplot as plt
 
-# df1 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/ACC.csv")
-# df2 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/BVP.csv")
-# df3 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/EDA.csv")
-# df4 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/HR.csv")
-# df5 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/IBI.csv")
-# df6 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/TEMP.csv")
+# df1 = pd.read_csv("../Data/raw/WESAD/S2/S2_E4_Data/ACC.csv")
+# df2 = pd.read_csv(S2_E4_DIR / "BVP.csv")
+# df3 = pd.read_csv(S2_E4_DIR / "EDA.csv")
+# df4 = pd.read_csv(S2_E4_DIR / "HR.csv")
+# df5 = pd.read_csv(S2_E4_DIR / "IBI.csv")
+# df6 = pd.read_csv(S2_E4_DIR / "TEMP.csv")
 
 # fig, axs = plt.subplots(6, 1, figsize=(12, 15))
 
@@ -117,13 +117,19 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
 
-df1 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/ACC.csv")
-df2 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/BVP.csv")
-df3 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/EDA.csv")
-df4 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/HR.csv")
-df5 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/IBI.csv")
-df6 = pd.read_csv("data/raw/WESAD/S2/S2_E4_Data/TEMP.csv")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+RAW_WESAD = PROJECT_ROOT / "Data" / "raw" / "WESAD"
+S2_DIR = RAW_WESAD / "S2"
+S2_E4_DIR = S2_DIR / "S2_E4_Data"
+
+df1 = pd.read_csv(S2_E4_DIR / "ACC.csv")
+df2 = pd.read_csv(S2_E4_DIR / "BVP.csv")
+df3 = pd.read_csv(S2_E4_DIR / "EDA.csv")
+df4 = pd.read_csv(S2_E4_DIR / "HR.csv")
+df5 = pd.read_csv(S2_E4_DIR / "IBI.csv")
+df6 = pd.read_csv(S2_E4_DIR / "TEMP.csv")
 time_acc = np.arange(len(df1)) / 32
 time_bvp = np.arange(len(df2)) / 64
 time_eda = np.arange(len(df3)) / 4
@@ -162,7 +168,7 @@ import matplotlib.pyplot as plt
 
 # Load file
 df = pd.read_csv(
-    "data/raw/WESAD/S2/S2_respiban.txt",
+    S2_DIR / "S2_respiban.txt",
     sep=r"\s+",
     comment="#",
     header=None
@@ -214,7 +220,7 @@ import matplotlib.pyplot as plt
 
 # Load Respiban data
 df = pd.read_csv(
-    "data/raw/WESAD/S2/S2_respiban.txt",
+    S2_DIR / "S2_respiban.txt",
     sep=r"\s+",
     comment="#",
     header=None
@@ -261,4 +267,6 @@ axs[4].set_xlabel("Time (seconds)")
 
 plt.tight_layout()
 plt.show()
+
+
 

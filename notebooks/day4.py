@@ -1,10 +1,12 @@
-# # upsample the EDA with labels
+﻿# # upsample the EDA with labels
 # import pickle
 # import numpy as np
 # import matplotlib.pyplot as plt
+from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 # # Load data
-# with open("data/raw/WESAD/S2/S2.pkl", "rb") as f:
+# with open(PROJECT_ROOT / "Data" / "raw" / "WESAD" / "S2" / "S2.pkl", "rb") as f:
 #     data = pickle.load(f, encoding="latin1")
 
 # eda = data['signal']['wrist']['EDA'].flatten()
@@ -59,9 +61,11 @@
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 # Load data
-with open("data/raw/WESAD/S2/S2.pkl", "rb") as f:
+with open(PROJECT_ROOT / "Data" / "raw" / "WESAD" / "S2" / "S2.pkl", "rb") as f:
     data = pickle.load(f, encoding="latin1")
 
 labels = data['label']
@@ -114,3 +118,4 @@ def plot_signal(signal, signal_name):
     plt.ylabel(signal_name)
     plt.grid(True)
     plt.show()
+

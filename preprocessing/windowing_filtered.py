@@ -176,3 +176,75 @@ def windows_to_dataframe(window_dict, signal_name):
     df = pd.DataFrame(arr)
     df.columns = [f"{signal_name}_t{i}" for i in range(arr.shape[1])]
     return df
+
+
+def _window_preview_series(windows, max_windows=5):
+    """Return flattened preview data from the first few windows."""
+    arr = np.asarray(windows, dtype=object if isinstance(windows, list) else None)
+    if len(arr) == 0:
+        return []
+    previews = []
+    for window in list(arr[:max_windows]):
+        w = np.asarray(window)
+        if w.ndim == 1:
+            previews.append(w)
+        elif w.ndim == 2:
+            previews.append(w[:, 0])
+        else:
+            previews.append(w.reshape(w.shape[0], -1)[:, 0])
+    return previews
+
+
+def plot_all_windowed_signals(window_dict, output_dir=None, prefix="windows", max_windows=5, show=False):
+    """
+    Plot every signal in a window result and optionally save each plot as PNG.
+
+    Parameters
+    ----------
+    window_dict : dict
+        Result returned by create_windows_filtered/create_windows_normalized.
+    output_dir : str or Path, optional
+        Folder where PNG plots are saved. If None, plots are only shown/created.
+    prefix : str
+        Filename prefix for saved PNGs.
+    max_windows : int
+        Number of windows to overlay per signal.
+    show : bool
+        Show plots interactively. Keep False when running from run_all.py.
+    """
+    import matplotlib.pyplot as plt
+    from pathlib import Path
+
+    output_path = Path(output_dir) if output_dir else None
+    if output_path:
+        output_path.mkdir(parents=True, exist_ok=True)
+
+    saved = []
+    for signal_name, windows in window_dict.get('windows', {}).items():
+        previews = _window_preview_series(windows, max_windows=max_windows)
+        if not previews:
+            continue
+
+        fig, ax = plt.subplots(figsize=(10, 4))
+        for idx, series in enumerate(previews, start=1):
+            ax.plot(series, linewidth=1, alpha=0.75, label=f"window {idx}")
+        ax.set_title(f"{signal_name} window preview")
+        ax.set_xlabel("Sample inside window")
+        ax.set_ylabel(signal_name)
+        ax.grid(True, alpha=0.3)
+        ax.legend(loc="best")
+        fig.tight_layout()
+
+        if output_path:
+            filename = f"{prefix}_{signal_name}.png"
+            file_path = output_path / filename
+            fig.savefig(file_path, dpi=150, bbox_inches="tight")
+            saved.append(str(file_path))
+
+        if show:
+            plt.show()
+        else:
+            plt.close(fig)
+
+    return saved
+

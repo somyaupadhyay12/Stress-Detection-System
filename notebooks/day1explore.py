@@ -1,9 +1,11 @@
-import pickle
+﻿import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from pathlib import Path
 
-file_path = "data/raw/WESAD/S2/S2.pkl"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+file_path = PROJECT_ROOT / "Data" / "raw" / "WESAD" / "S2" / "S2.pkl"
 with open(file_path, "rb") as f:
     data = pickle.load(f, encoding='latin1')
 print(data.keys())
@@ -20,3 +22,5 @@ import numpy as np
 
 print("Label shape:", data['label'].shape)
 print("Unique labels:", np.unique(data['label']))
+
+
