@@ -72,7 +72,10 @@ def statistical_features(signal):
     zero_crossing_rate, cv
     """
     signal = np.asarray(signal, dtype=float)
-    signal = signal[~np.isnan(signal)]
+    # Resampling and filtering can leave a rare non-finite value.  Excluding
+    # all non-finite values (rather than only NaNs) keeps feature generation
+    # stable for every raw/filtered/normalized window.
+    signal = signal[np.isfinite(signal)]
 
     if len(signal) < 2:
         keys = ['mean', 'median', 'std', 'variance', 'min', 'max', 'range',
@@ -89,15 +92,28 @@ def statistical_features(signal):
     rng = maximum - minimum
     q75, q25 = np.percentile(signal, [75, 25])
     iqr = q75 - q25
-    skewness = float(stats.skew(signal))
-    kurtosis = float(stats.kurtosis(signal))
+    # ``np.ptp == 0`` misses near-constant, subnormal floating-point windows
+    # produced by resampling.  Treat values below machine precision as flat.
+    amplitude = max(1.0, float(np.max(np.abs(signal))))
+    is_constant = np.ptp(signal) <= np.finfo(float).eps * amplitude
+    skewness = 0.0 if is_constant else float(stats.skew(signal))
+    kurtosis = 0.0 if is_constant else float(stats.kurtosis(signal))
     rms = np.sqrt(np.mean(signal ** 2))
     energy = np.sum(signal ** 2)
 
     # Shannon entropy computed from a 10-bin histogram of the window's values.
-    hist, _ = np.histogram(signal, bins=10, density=True)
-    hist = hist[hist > 0]
-    entropy = float(-np.sum(hist * np.log2(hist))) if len(hist) > 0 else 0.0
+    if is_constant:
+        entropy = 0.0
+    else:
+        try:
+            # Counts avoid the numerical instability of density=True for
+            # very narrow windows.  Convert to probabilities explicitly.
+            hist, _ = np.histogram(signal, bins=10, density=False)
+            probabilities = hist[hist > 0] / hist.sum()
+            entropy = float(-np.sum(probabilities * np.log2(probabilities)))
+        except ValueError:
+            # Degenerate floating-point range: it carries no useful entropy.
+            entropy = 0.0
 
     mav = np.mean(np.abs(signal))
     _trapz = getattr(np, 'trapezoid', None) or np.trapz  # numpy >=2.0 renamed trapz -> trapezoid

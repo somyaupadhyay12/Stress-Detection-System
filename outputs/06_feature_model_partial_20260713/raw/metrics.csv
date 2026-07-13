@@ -1,0 +1,2 @@
+variant,test_subjects,test_accuracy,test_auc,n_features,n_train,n_test
+raw,S2,0.7385159010600707,0.9766007361566154,108,1728,849

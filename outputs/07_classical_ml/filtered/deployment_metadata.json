@@ -1,0 +1,14 @@
+{
+  "chosen_model": "logistic_regression",
+  "feature_count": 108,
+  "window_seconds": 5,
+  "overlap": 0.5,
+  "target_sampling_rate_hz": 4,
+  "label_map": {
+    "1": 0,
+    "2": 1,
+    "3": 0
+  },
+  "evaluation": "GroupShuffleSplit held-out subjects plus GroupKFold training cross-validation",
+  "warning": "This research model is not a medical diagnostic device."
+}

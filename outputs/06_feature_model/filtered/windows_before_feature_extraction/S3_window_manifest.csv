@@ -1,0 +1,5 @@
+subject,signal,window_shape,window_count,samples_per_window
+S3,ACC,2596 x 20 x 3,2596,20
+S3,BVP,2596 x 20 x 1,2596,20
+S3,EDA,2596 x 20 x 1,2596,20
+S3,TEMP,2596 x 20 x 1,2596,20
