@@ -1,2 +1,0 @@
-variant,test_subjects,test_accuracy,test_auc,n_features,n_train,n_test
-filtered,S2,0.7408716136631331,0.9717536976364789,108,1728,849

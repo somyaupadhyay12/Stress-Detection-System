@@ -1,5 +1,0 @@
-subject,signal,window_shape,window_count,samples_per_window
-S2,ACC,2430 x 20 x 3,2430,20
-S2,BVP,2430 x 20 x 1,2430,20
-S2,EDA,2430 x 20 x 1,2430,20
-S2,TEMP,2430 x 20 x 1,2430,20

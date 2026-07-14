@@ -22,8 +22,7 @@ from datetime import datetime
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-OUTPUTS_DIR = PROJECT_ROOT / "outputs"
-JUPYTER_RUNTIME_DIR = OUTPUTS_DIR / "jupyter_runtime"
+JUPYTER_RUNTIME_DIR = PROJECT_ROOT / "outputs" / "jupyter_runtime"
 JUPYTER_RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
 os.environ.setdefault("JUPYTER_RUNTIME_DIR", str(JUPYTER_RUNTIME_DIR))
 os.environ.setdefault("JUPYTER_ALLOW_INSECURE_WRITES", "1")
@@ -32,14 +31,17 @@ import nbformat
 from nbclient import NotebookClient
 
 
-PREPROCESSING_DIR = PROJECT_ROOT / "preprocessing"
-
+# ---------------------------------------------------------------------------
+# Pipeline notebooks — each stage now lives in its own numbered folder at the
+# project root (01_filtering/, 02_normalization/, …). The executed notebook
+# copy and figures are written to <stage_folder>/outputs/ by run_notebook().
+# ---------------------------------------------------------------------------
 PIPELINE_NOTEBOOKS = [
-    PREPROCESSING_DIR / "01_filtering.ipynb",
-    PREPROCESSING_DIR / "02_normalization.ipynb",
-    PREPROCESSING_DIR / "03_raw_windowing.ipynb",
-    PREPROCESSING_DIR / "04_windowing_filtered.ipynb",
-    PREPROCESSING_DIR / "05_windowing_normalised.ipynb",
+    PROJECT_ROOT / "01_filtering"          / "01_filtering.ipynb",
+    PROJECT_ROOT / "02_normalization"      / "02_normalization.ipynb",
+    PROJECT_ROOT / "03_raw_windowing"      / "03_raw_windowing.ipynb",
+    PROJECT_ROOT / "04_windowing_filtered" / "04_windowing_filtered.ipynb",
+    PROJECT_ROOT / "05_windowing_normalised" / "05_windowing_normalised.ipynb",
 ]
 
 
@@ -129,7 +131,9 @@ def save_embedded_png_outputs(notebook, output_dir: Path) -> int:
 
 def run_notebook(notebook_path: Path) -> Path:
     relative_name = notebook_path.relative_to(PROJECT_ROOT)
-    output_dir = OUTPUTS_DIR / safe_folder_name(notebook_path)
+    # Each stage folder keeps its own outputs/ subfolder alongside the source
+    # notebook, so code and results are always co-located.
+    output_dir = notebook_path.parent / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     log_path = output_dir / "run.log"
@@ -182,8 +186,8 @@ def run_notebook(notebook_path: Path) -> Path:
 
 
 def write_manifest(completed_outputs: list[tuple[Path, Path]]) -> None:
-    OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
-    manifest_path = OUTPUTS_DIR / "MANIFEST.txt"
+    # Write a top-level summary manifest at the project root.
+    manifest_path = PROJECT_ROOT / "MANIFEST.txt"
 
     lines = [
         "Stress Detection Pipeline Outputs",
@@ -193,7 +197,7 @@ def write_manifest(completed_outputs: list[tuple[Path, Path]]) -> None:
         f"- Raw data: {PROJECT_ROOT / 'Data' / 'raw'}",
         f"- Preprocessed data: {PROJECT_ROOT / 'Data' / 'preprocessed_data'}",
         "",
-        "Code file outputs:",
+        "Stage outputs (code and outputs co-located in each stage folder):",
     ]
 
     for notebook_path, output_dir in completed_outputs:
@@ -205,13 +209,12 @@ def write_manifest(completed_outputs: list[tuple[Path, Path]]) -> None:
 
 def main() -> int:
     os.chdir(PROJECT_ROOT)
-    OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 
     print("Stress Detection pipeline runner")
     print(f"Project: {PROJECT_ROOT}")
     print(f"Raw data: {PROJECT_ROOT / 'Data' / 'raw'}")
     print(f"Preprocessed data: {PROJECT_ROOT / 'Data' / 'preprocessed_data'}")
-    print(f"All run outputs: {OUTPUTS_DIR}")
+    print("Outputs: written to <stage_folder>/outputs/ alongside each notebook")
 
     completed_outputs: list[tuple[Path, Path]] = []
 

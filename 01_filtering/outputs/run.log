@@ -1,0 +1,9 @@
+Started: 2026-07-08T15:04:53
+Notebook: preprocessing\01_filtering.ipynb
+Working folder: C:\Users\somya\Desktop\Stress Detection Project Somya\Stress-Detection-System\preprocessing
+
+WARNING: Insecure writes have been enabled via environment variable 'JUPYTER_ALLOW_INSECURE_WRITES'! If this is not intended, remove the variable or set its value to 'False'.
+Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+
+Completed: 2026-07-08T15:07:00
+Saved embedded PNG outputs: 26

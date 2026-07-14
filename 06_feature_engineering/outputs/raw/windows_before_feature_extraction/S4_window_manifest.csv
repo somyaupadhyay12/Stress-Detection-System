@@ -1,0 +1,5 @@
+subject,signal,window_shape,window_count,samples_per_window
+S4,ACC,2568 x 20 x 3,2568,20
+S4,BVP,2568 x 20 x 1,2568,20
+S4,EDA,2568 x 20 x 1,2568,20
+S4,TEMP,2568 x 20 x 1,2568,20
