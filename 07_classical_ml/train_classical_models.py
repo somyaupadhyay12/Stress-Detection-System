@@ -35,8 +35,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT_ROOT / "preprocessing"))
-sys.path.insert(0, str(PROJECT_ROOT / "feature_engineering"))
+sys.path.insert(0, str(PROJECT_ROOT / "04_windowing_filtered"))
+sys.path.insert(0, str(PROJECT_ROOT / "05_windowing_normalised"))
 from windowing_filtered import create_windows_filtered
 from windowing_normalised import create_windows_normalized
 

@@ -1,0 +1,10 @@
+stage,subject_id,signal,variant,input_samples,input_shape,windows,features,seconds
+windowing_and_features,S2,E4_EDA,raw,24316,24316x1,849,18,26.854706400015857
+windowing_and_features,S2,E4_EDA,filtered,24316,24316x1,849,18,27.375212300015846
+windowing_and_features,S2,E4_EDA,filtered_normalized,24316,24316x1,849,18,27.868080200016266
+windowing_and_features,S3,E4_EDA,raw,25972,25972x1,862,18,28.940497300005518
+windowing_and_features,S3,E4_EDA,filtered,25972,25972x1,862,18,29.36981440000818
+windowing_and_features,S3,E4_EDA,filtered_normalized,25972,25972x1,862,18,29.8038663000043
+windowing_and_features,S4,E4_EDA,raw,25692,25692x1,866,18,36.30715119998786
+windowing_and_features,S4,E4_EDA,filtered,25692,25692x1,866,18,36.94339110000874
+windowing_and_features,S4,E4_EDA,filtered_normalized,25692,25692x1,866,18,37.79266770000686

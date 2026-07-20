@@ -1,0 +1,23 @@
+{
+  "subjects": [
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "variants": [
+    "raw",
+    "filtered",
+    "filtered_normalized"
+  ],
+  "target_fs_hz": 4,
+  "window_seconds": 5,
+  "overlap": 0.5,
+  "label_map": {
+    "1": 0,
+    "2": 1,
+    "3": 0
+  },
+  "split": "GroupShuffleSplit(test_size=0.20, random_state=42)",
+  "model": "median imputation -> StandardScaler -> balanced LogisticRegression(max_iter=3000, random_state=42)",
+  "elapsed_seconds": 204.4451068000053
+}
