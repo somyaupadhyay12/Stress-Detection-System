@@ -222,6 +222,13 @@ def main() -> int:
         for notebook_path in PIPELINE_NOTEBOOKS:
             output_dir = run_notebook(notebook_path)
             completed_outputs.append((notebook_path, output_dir))
+        
+        # Run model comparison stage
+        import subprocess
+        print("\nRunning model comparison stage...")
+        comp_script = PROJECT_ROOT / "07_classical_ml" / "run_model_comparison.py"
+        subprocess.run([sys.executable, str(comp_script)], check=True)
+        
     except Exception as exc:
         write_manifest(completed_outputs)
         print(f"\nPipeline stopped: {exc}", file=sys.stderr)
